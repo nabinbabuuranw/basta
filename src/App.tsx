@@ -1,0 +1,33 @@
+import { lazy, Suspense } from 'react';
+import { useLocation } from './lib/router';
+import { SkeletonRows } from './components/ui';
+import Home from './pages/Home';
+const Office = lazy(() => import('./pages/Office'));
+const Family = lazy(() => import('./pages/Family'));
+const Admin = lazy(() => import('./pages/Admin'));
+const L = (C: any, p: any = {}) => <C {...p} />;
+const lazyNamed = (m: () => Promise<any>, name: string) => lazy(async () => ({ default: (await m())[name] }));
+const Login = lazyNamed(() => import('./pages/Auth'), 'Login');
+const Register = lazyNamed(() => import('./pages/Auth'), 'Register');
+const Terms = lazyNamed(() => import('./pages/Legal'), 'Terms');
+const Privacy = lazyNamed(() => import('./pages/Legal'), 'Privacy');
+const NotFound = lazyNamed(() => import('./pages/Legal'), 'NotFound');
+const Receipt = lazyNamed(() => import('./pages/Print'), 'Receipt');
+const Report = lazyNamed(() => import('./pages/Print'), 'Report');
+export default function App() {
+  const { path } = useLocation();
+  let page;
+  if (path === '/') page = <Home />;
+  else if (path === '/login') page = L(Login);
+  else if (path === '/register') page = L(Register);
+  else if (path === '/terms') page = L(Terms);
+  else if (path === '/privacy') page = L(Privacy);
+  else if (path === '/settings') page = L(Office);
+  else if (/^\/app(\/|$)/.test(path)) page = L(Office);
+  else if (/^\/family(\/\d+)?$/.test(path)) page = L(Family);
+  else if (/^\/admin(\/|$)/.test(path)) page = L(Admin);
+  else if (/^\/receipt\/\d+$/.test(path)) page = L(Receipt, { id: Number(path.split('/')[2]) });
+  else if (/^\/report\/\d+\/\d+$/.test(path)) page = L(Report, { exam: Number(path.split('/')[2]), student: Number(path.split('/')[3]) });
+  else page = L(NotFound);
+  return <Suspense fallback={<div className="wrap py-10"><SkeletonRows n={6} /></div>}>{page}</Suspense>;
+}
