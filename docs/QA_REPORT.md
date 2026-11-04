@@ -122,3 +122,7 @@ Palette tokens only (tailwind.config.js), Baloo 2 + Atkinson self-hosted, own ic
 
 ## 6. Known limits
 No online fee payment; no SMS (WhatsApp links instead); Pro is switched on by hand; one school per staff account; report card layout is one design; not connected to IEMIS or any board; the demo school resets every 3 hours.
+
+
+## 7. Follow-up check (06:28 UTC, Nov 4)
+The one failing E2E check (bulk paste) was re-run alone on the live site, signed in as the demo school office: pasting 2 students showed "2 students added" and the new row appeared in the table. PASS. (The two test students sit in the demo school until its 3-hour reset.)
